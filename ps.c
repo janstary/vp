@@ -7,16 +7,6 @@
 #include "color.h"
 #include "ps.h"
 
-/* Embed the Charis or Doulos font in the resulting PS file
- * in case the system does not have them. If possible,
- * embed just the characters we actualy use. */
-
-/*
-FIXME landscape A4, or a BBox of the actual range
-FIXME origin at the NE corner, axes going down and left
-FIXME axes and ticks in Hz and Bark
-*/
-
 static void
 psvow(struct vowel* v, FILE* f)
 {
@@ -139,14 +129,14 @@ pswrite(struct vplot* p, FILE* f)
 	fprintf(f, "\tend\n} def\n");
 	fprintf(f, "\n");
 
-	/* FIXME make sure we have the glyphs */
+	/* a font that has the glyphs */
+
 	fprintf(f, "/Charis-SIL findfont ");
 	fprintf(f, "10 Hz1 scalefont ");
 	fprintf(f, "setfont\n");
 	fprintf(f, "\n");
 
 	/* axes and ticks  */
-	/* FIXME Hz and Bark */
 
 	fprintf(f, "newpath\n");
 	fprintf(f, "5 5 moveto\n");
