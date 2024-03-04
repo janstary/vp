@@ -92,7 +92,7 @@ getgroup(FILE* ifp)
 		}
 		if (*line == '#') {
 			if (g->label == NULL) {
-				for (p = line+1; p && *p && isspace(*p); p++)
+				for (p=line+1; p && *p && isspace(*p); p++)
 					;
 				if (*p)
 					g->label = strdup(p);

@@ -25,9 +25,9 @@ ps.o: ps.c ps.h
 	$(CC) $(CFLAGS) -c $<
 
 test: ${BINS} ${TEST}
-	./vp male-back.ps < male-back.txt
-	./vp female-front.ps < female-front.txt
-	./vp diphthongs.ps < diphthongs.txt
+	./vp male-back.txt
+	./vp female-front.txt
+	./vp diphthongs.txt
 
 lint: ${MANS}
 	mandoc -Tlint -Wstyle ${MANS}

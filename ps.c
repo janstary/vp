@@ -158,7 +158,6 @@ pswrite(struct vplot* p, FILE* f)
 		psgroup(g, f, rgb((1.0 * (n+1)) / p->size));
 
 	/* Display the group labels */
-	fprintf(f, "\n%% group labels\n");
 	fprintf(f, "F1min Hz1 F2max Hz2 translate\n");
 	fprintf(f, "/Charis-SIL findfont 20 Hz1 scalefont setfont\n");
 	/*

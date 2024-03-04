@@ -22,33 +22,37 @@
 static void
 usage(void)
 {
-	fprintf(stderr, "usage: vp [-aegl] output [input]\n");
+	fprintf(stderr, "usage: vp [-aegl] [[input] [output]]\n");
 }
 
 int
 main(int argc, char** argv)
 {
 	int c;
-	struct group* g = NULL;
-	struct vplot* p = NULL;
 	int otype = PS;
 	char *suf = NULL;
+	struct group* g = NULL;
+	struct vplot* p = NULL;
 	char *ifile = NULL;
 	char *ofile = NULL;
-	FILE *ifp = NULL;
-	FILE *ofp = NULL;
+	FILE *ifp = stdin;
+	FILE *ofp = stdout;
+	size_t len = 0;
 
 	while ((c = getopt(argc, argv, "aegl")) != -1) switch (c) {
 	}
 	argc -= optind;
 	argv += optind;
 
-	if (argc < 1 || argc > 2) {
+	if (argc > 2) {
 		usage();
 		return 1;
 	}
-
-	if (argc > 0 && (ofile = *argv)) {
+	if (argc > 0 && (ifile = argv[0]))  {
+		if ((ifp = fopen(ifile, "r")) == NULL)
+			err(1, "%s", ifile);
+	}
+	if (argc > 1 && (ofile = argv[1]) && strcmp(ofile, "-")) {
 		if ((suf = rindex(ofile, '.')) == NULL)
 			errx(1, "%s: output format unknown", ofile);
 		if ((strcmp(suf, ".ps")) == 0) {
@@ -58,12 +62,14 @@ main(int argc, char** argv)
 		}
 		if ((ofp = fopen(ofile, "w")) == NULL)
 			err(1, "%s", ofile);
-	}
-	if (argc > 1 && (ifile = *++argv))  {
-		if ((ifp = fopen(ifile, "r")) == NULL)
-			err(1, "%s", ifile);
-	} else {
-		ifp = stdin;
+	} else if (ifile && strcmp(ifile, "-")) {
+		ofile = calloc(1, 4 + (len = strlen(ifile)));
+		strlcpy(ofile, ifile, len);
+		if ((suf = rindex(ofile, '.')) == NULL)
+			suf = ofile + len;
+		strlcpy(suf, ".ps", 4);
+		if ((ofp = fopen(ofile, "w")) == NULL)
+			err(1, "%s", ofile);
 	}
 
 	if ((p = calloc(1, sizeof(struct vplot))) == NULL)

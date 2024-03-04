@@ -7,13 +7,11 @@
 .Sh SYNOPSIS
 .Nm
 .Op Fl aegl
-.Ar output
-.Op Ar input
+.Op Ar input Op Ar output
 .Sh DESCRIPTION
 .Nm
 produces vowel plots.
-It reads plain text lines as input,
-containing formant values and possibly labels,
+It reads lines of text containing formant values and possibly labels,
 and draws the corresponding dots in the vowel space.
 An input line is expected to look like
 .Bd -literal
@@ -37,20 +35,18 @@ meaning F1 and F2 of the first and second target,
 possibly preceded by a label.
 For every such line,
 an arrow is drawn between the targets,
-with the first target labeled.
+with the first one labeled.
 .Pp
 The input lines can be separated into groups by blank lines.
 Typicaly, these are realizations of a single vowel.
 Every such group can begin with a sequence of comments,
 which are lines starting with
 .Sq # .
-If the group starts with comments,
-the first word on the comment line is used
-as a label for the whole group.
+If the group starts with comments, a nonempty comment on the
+first comment line is used as a label for the whole group.
 This can be used to label groups of vowels:
 .Bd -literal
 # ɪ
-# John, 1964
 675 1850
 564 2347
 501 1786
@@ -58,7 +54,6 @@ This can be used to label groups of vowels:
 487 2080
 
 # ə
-# John, 2011
 472 1193
 887 2656
 432 1399
@@ -76,13 +71,29 @@ option, the center of gravity is drawn;
 with the
 .Fl a
 option, the arrows of a group of diphthongs are condensed
-into a single arrow between the two centers of gravity.
+into an arrow between the two centers of gravity.
 .Pp
-The output format is deduced from the
+Without arguments,
+.Nm
+reads standard output and writes PostScript to standard output.
+With a named
+.Ar input
+file,
+.Nm
+writes PostScript into an output file of the same basename.
+With both
+.Ar input
+and
 .Ar output
-file name; currently,
+given,
+.Nm
+writes the output in a format determined by the output filename;
+currently,
 .Nm
 only produces PS files.
+As a special case,
+.Sq -
+is considered the name of the standard input and output.
 .Pp
 The options are as follows:
 .Pp
