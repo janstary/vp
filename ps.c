@@ -56,6 +56,26 @@ pswrite(struct vplot* p, FILE* f)
 	if (p == NULL || f == NULL)
 		return -1;
 
+	fprintf(f, "%%!PS-Adobe-3.0\n");
+	fprintf(f, "%%%%Orientation: Portrait\n");
+	fprintf(f, "%%%%DocumentMedia: A4 595 841 0 () ()\n");
+	fprintf(f, "%%%%DocumentNeededResources: font Times-Roman\n");
+	fprintf(f, "%%%%DocumentSuppliedResources: procset vowels\n");
+	fprintf(f, "%%%%EndComments\n");
+	fprintf(f, "%%%%BeginProlog\n");
+	fprintf(f, "%%%%BeginResource: procset vowels 10170 10170\n");
+	fprintf(f, "/f0 { /Times-Roman fs selectfont } def\n");
+	fprintf(f, "/f1 { /Times-Bold fs selectfont } def\n");
+	fprintf(f, "%%%%EndResource\n");
+	fprintf(f, "%%%%EndProlog\n");
+	fprintf(f, "%%%%BeginSetup\n");
+	fprintf(f, "%%%%BeginFeature: *PageSize Letter\n");
+	fprintf(f, "<</PageSize [612 790]>>setpagedevice\n");
+	fprintf(f, "%%%%EndFeature\n");
+	fprintf(f, "%%%%EndSetup\n");
+	fprintf(f, "%%%%Page: 1 1\n");
+	fprintf(f, "\n");
+
 	/* PS itself will do the scaling, given the limits.
 	 * Also, we can simply translate back down to F1 neg F2 neg
 	 * and have the dots be placed inside the actual range. */
@@ -110,11 +130,11 @@ pswrite(struct vplot* p, FILE* f)
 	fprintf(f, "\t/th 1 def\n");
 	fprintf(f, "\t/ht 3 def\n");
 
-	fprintf(f, "/smtx mtrx currentmatrix def\n");
+	fprintf(f, "\t/smtx mtrx currentmatrix def\n");
 	fprintf(f, "\tnewpath tailx taily translate ang rotate\n");
-	fprintf(f, "0 th moveto hb th lineto hb ht lineto len 0 lineto\n");
-	fprintf(f, "hb ht neg lineto hb th neg lineto 0 th neg lineto\n");
-	fprintf(f, "closepath fill\n");
+	fprintf(f, "\t0 th moveto hb th lineto hb ht lineto len 0 lineto\n");
+	fprintf(f, "\thb ht neg lineto hb th neg lineto 0 th neg lineto\n");
+	fprintf(f, "\tclosepath fill\n");
 	fprintf(f, "\tsmtx setmatrix\n");
 	fprintf(f, "\tend\n} def\n");
 	fprintf(f, "\n");
@@ -155,9 +175,9 @@ pswrite(struct vplot* p, FILE* f)
 
 	/* Draw the actual vowels */
 	for (n = 0, g = p->head; g; n++, g = g->next) {
-		psgroup(g, f, rgb((1.0 * (n+1)) / p->size));
 		psgroup(g, f, rgb(n));
 	}
+	fprintf(f, "\n");
 
 	/* Display the group labels */
 	fprintf(f, "F1min Hz1 F2max Hz2 translate\n");
@@ -167,7 +187,12 @@ pswrite(struct vplot* p, FILE* f)
 	50 -50 20 2 mul sub moveto 0.13 0.20 0.40 setrgbcolor (e) show
 	50 -50 20 3 mul sub moveto 0.70 0.30 0.60 setrgbcolor (goat) show
 	*/
+	fprintf(f, "\n");
 
-	fprintf(f, "\nshowpage\n");
+	fprintf(f, "showpage\n");
+	fprintf(f, "%%%%Trailer\n");
+	fprintf(f, "%%%%Pages: 1\n");
+	fprintf(f, "%%%%EOF\n");
+
 	return 0;
 }
