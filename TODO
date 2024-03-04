@@ -1,6 +1,3 @@
-colors: Instead of the naive freq-to-rgb routine in color.c
-have an actual palette that e.g. GnuPlot etc must use.
-
 Specify paper size (A4 by default) and the bounding box.
 See what e.g. mandoc does in the preambule.
 
