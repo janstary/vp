@@ -1,6 +1,0 @@
-Specify paper size (A4 by default) and the bounding box.
-See what e.g. mandoc does in the preambule.
-
-Can we be clever about the size of dots and fonts?
-With a few dots, they can be bigger, with a crowded plot,
-they should be smaller. Or let the user say?
