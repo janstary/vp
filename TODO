@@ -1,0 +1,14 @@
+interface: vp input output;
+- with no output and no input, read stdin and write PS to stdout
+- input and no output, read the input and write PS of the same name
+- both can be '-', which defaults to postscript
+
+colors: Instead of the naive freq-to-rgb routine in color.c
+have an actual palette that e.g. GnuPlot etc must use.
+
+Specify paper size (A4 by default) and the bounding box.
+See what e.g. mandoc does in the preambule.
+
+Can we be clever about the size of dots and fonts?
+With a few dots, they can be bigger, with a crowded plot,
+they should be smaller. Or let the user say?
