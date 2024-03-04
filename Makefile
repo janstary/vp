@@ -28,7 +28,6 @@ test: ${BINS} ${TEST}
 	./vp male-back.ps < male-back.txt
 	./vp female-front.ps < female-front.txt
 	./vp diphthongs.ps < diphthongs.txt
-	cat *.txt | ./vp all.ps
 
 lint: ${MANS}
 	mandoc -Tlint -Wstyle ${MANS}

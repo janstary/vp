@@ -1,12 +1,13 @@
-# uː
 two	349	1517
 do	347	1740
 too	315	1815
 do	319	1722
+
 goose	285	1243
 moving	302	 761
 canoe	260	1703
 boots	255	1281
+
 fool	289	663
 cool	327	1043
 school	304	559
