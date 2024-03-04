@@ -31,9 +31,9 @@ psgroup(struct group* g, FILE* f, uint32_t rgb)
 	if (g->label)
 		fprintf(f, "%% %s\n", g->label);
 	fprintf(f, "%f %f %f setrgbcolor\n",
-		((rgb & 0x000000ff) >>  0) / 255.0,
-		((rgb & 0x0000ff00) >>  8) / 255.0,
-		((rgb & 0x00ff0000) >> 16) / 255.0);
+		((rgb & 0xff0000) >> 16) / 255.0,
+		((rgb & 0x00ff00) >>  8) / 255.0,
+		((rgb & 0x0000ff) >>  0) / 255.0);
 	for (v = g->head; v; v = v->next)
 		psvow(v, f);
 }
