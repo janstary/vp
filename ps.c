@@ -154,8 +154,10 @@ pswrite(struct vplot* p, FILE* f)
 	fprintf(f, "\nF1min Hz1 neg F2min Hz2 neg translate\n");
 
 	/* Draw the actual vowels */
-	for (n = 0, g = p->head; g; n++, g = g->next)
+	for (n = 0, g = p->head; g; n++, g = g->next) {
 		psgroup(g, f, rgb((1.0 * (n+1)) / p->size));
+		psgroup(g, f, rgb(n));
+	}
 
 	/* Display the group labels */
 	fprintf(f, "F1min Hz1 F2max Hz2 translate\n");
