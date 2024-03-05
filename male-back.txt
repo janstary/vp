@@ -8,6 +8,5 @@ boots	255	1281
 
 # before the dark /l/
 fool	289	663
-cool	327	1043
 school	304	559
 pool	325	514
