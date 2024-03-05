@@ -33,16 +33,32 @@ mkvow(char* label, uint16_t F1, uint16_t F2, uint16_t G1, uint16_t G2)
 	return v;
 }
 
+uint16_t
+getnum(char** line)
+{
+	uint16_t F = 0;
+	char* p = NULL;
+	const char* e = NULL;
+	while (*line && isspace(**line))
+		(*line)++;
+	if ((p = strsep(line, " \t\n")) == NULL) {
+		warnx("premature end of line");
+		return 0;
+	}
+	if ((F = strtonum(p, 1, 8000, &e)) == 0) {
+		warnx("'%s' %s", p, e);
+		return 0;
+	}
+	return F;
+}
+
 struct vowel*
 getvow(char* line)
 {
-/* FIXME labels, and recognize both of
- * label F1 F2 and label F1 F2 G1 G2 */
-	uint16_t F1 = 0, F2 = 0;
-	uint16_t G1 = 0, G2 = 0;
 	char* l = NULL;
 	char* p = NULL;
-	const char* e = NULL;
+	uint16_t F1 = 0, F2 = 0;
+	uint16_t G1 = 0, G2 = 0;
 	if (line == NULL || *line == '\0')
 		return NULL;
 	while (isspace(*line))
@@ -50,49 +66,25 @@ getvow(char* line)
 	if (!isdigit(*line)) {
 		p = strsep(&line, " \t\n");
 		l = strdup(p);
-		while (isspace(*line))
-			line++;
 	}
-	if ((p = strsep(&line, " \t\n")) == NULL) {
-		warnx("invalid line '%s'", line);
+	if ((F1 = getnum(&line)) == 0) {
+		warnx("invalid F1");
 		return NULL;
 	}
-	if ((F1 = strtonum(p, 1, 8000, &e)) == 0) {
-		warnx("'%s' %s", p, e);
+	if ((F2 = getnum(&line)) == 0) {
+		warnx("invalid F1");
 		return NULL;
 	}
-	while (isspace(*line))
-		line++;
-	if ((p = strsep(&line, " \t\n")) == NULL) {
-		warnx("invalid line '%s'", line);
-		return NULL;
-	}
-	if ((F2 = strtonum(p, 1, 8000, &e)) == 0) {
-		warnx("%s %s", p, e);
-		return NULL;
-	}
-	if (line == NULL)
+	if (line == NULL) {
+		/* a monophthong ends here */
 		return mkvow(l, F1, F2, 0, 0);
-	while (isspace(*line))
-		line++;
-	if ((p = strsep(&line, " \t\n")) == NULL) {
-		warnx("invalid line '%s'", line);
+	}
+	if ((G1 = getnum(&line)) == 0) {
+		warnx("invalid G1");
 		return NULL;
 	}
-	if ((G1 = strtonum(p, 1, 8000, &e)) == 0) {
-		warnx("'%s' %s", p, e);
-		return NULL;
-	}
-	if (line == NULL)
-		return NULL;
-	while (isspace(*line))
-		line++;
-	if ((p = strsep(&line, " \t\n")) == NULL) {
-		warnx("invalid line '%s'", line);
-		return NULL;
-	}
-	if ((G2 = strtonum(p, 1, 8000, &e)) == 0) {
-		warnx("'%s' %s", p, e);
+	if ((G2 = getnum(&line)) == 0) {
+		warnx("invalid G2");
 		return NULL;
 	}
 	return mkvow(l, F1, F2, G1, G2);
