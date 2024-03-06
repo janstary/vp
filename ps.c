@@ -22,6 +22,14 @@ psvow(struct vowel* v, FILE* f)
 }
 
 static void
+psrgb(FILE *f, uint32_t rgb) {
+	fprintf(f, "%f %f %f setrgbcolor\n",
+		((rgb & 0xff0000) >> 16) / 255.0,
+		((rgb & 0x00ff00) >>  8) / 255.0,
+		((rgb & 0x0000ff) >>  0) / 255.0);
+}
+
+static void
 psgroup(struct group* g, FILE* f, uint32_t rgb)
 {
 	struct vowel* v;
@@ -30,10 +38,7 @@ psgroup(struct group* g, FILE* f, uint32_t rgb)
 	fprintf(f, "\n");
 	if (g->label)
 		fprintf(f, "%% %s\n", g->label);
-	fprintf(f, "%f %f %f setrgbcolor\n",
-		((rgb & 0xff0000) >> 16) / 255.0,
-		((rgb & 0x00ff00) >>  8) / 255.0,
-		((rgb & 0x0000ff) >>  0) / 255.0);
+	psrgb(f, rgb);
 	for (v = g->head; v; v = v->next)
 		psvow(v, f);
 }
@@ -131,9 +136,7 @@ pswrite(struct vplot* p, FILE* f)
 
 	/* a font that has the glyphs */
 
-	fprintf(f, "/Charis-SIL findfont ");
-	fprintf(f, "10 Hz1 scalefont ");
-	fprintf(f, "setfont\n");
+	fprintf(f, "/Charis-SIL findfont 20 Hz2 scalefont setfont\n");
 	fprintf(f, "\n");
 
 	/* axes and ticks  */
@@ -170,13 +173,13 @@ pswrite(struct vplot* p, FILE* f)
 	fprintf(f, "\n");
 
 	/* Display the group labels */
-	fprintf(f, "F1min Hz1 F2max Hz2 translate\n");
-	fprintf(f, "/Charis-SIL findfont 20 Hz1 scalefont setfont\n");
-	/*
-	50 -50 20 1 mul sub moveto 0.57 0.10 0.20 setrgbcolor (i) show
-	50 -50 20 2 mul sub moveto 0.13 0.20 0.40 setrgbcolor (e) show
-	50 -50 20 3 mul sub moveto 0.70 0.30 0.60 setrgbcolor (goat) show
-	*/
+	fprintf(f, "F1min 50 add Hz1 F2max 100 sub Hz2 translate\n");
+	fprintf(f, "/Charis-SIL findfont 15 scalefont setfont\n");
+	for (n = 0, g = p->head; g; n++, g = g->next) {
+		psrgb(f, rgb(n));
+		fprintf(f, "0 20 neg translate 0 0 moveto\n");
+		fprintf(f, "(%s) show\n", g->label);
+	}
 	fprintf(f, "\n");
 
 	fprintf(f, "showpage\n");
