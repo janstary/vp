@@ -6,7 +6,7 @@ do	319	1722
 canoe	260	1703
 boots	255	1281
 
-# before the dark /l/
+# before dark /l/
 fool	289	663
 school	304	559
 pool	325	514
