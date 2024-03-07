@@ -40,7 +40,7 @@ svgrgb(FILE *f, uint32_t rgb) {
 */
 
 static void
-svggroup(struct group* g, FILE* f, uint32_t rgb)
+svggroup(struct group* g, FILE* f)
 {
 	struct vowel* v;
 	if (g == NULL)
@@ -48,7 +48,6 @@ svggroup(struct group* g, FILE* f, uint32_t rgb)
 	if (g->label)
 		fprintf(f, "<!-- %s -->\n", g->label);
 	fprintf(f, "<g>\n");
-	/*svgrgb(f, rgb);*/
 	for (v = g->head; v; v = v->next)
 		svgvow(v, f);
 	fprintf(f, "</g>\n\n");
@@ -57,7 +56,6 @@ svggroup(struct group* g, FILE* f, uint32_t rgb)
 int
 svgwrite(struct vplot* p, FILE* f)
 {
-	unsigned n = 0;
 	struct group* g = NULL;
 	if (p == NULL || f == NULL)
 		return -1;
@@ -86,9 +84,8 @@ svgwrite(struct vplot* p, FILE* f)
 	/* FIXME ticks, in HZ and Bark */
 
 	/* Draw the actual vowels */
-	for (n = 0, g = p->head; g; n++, g = g->next) {
-		svggroup(g, f, rgb(n));
-	}
+	for (g = p->head; g; g = g->next)
+		svggroup(g, f);
 
 	/* Display the group labels */
 
