@@ -84,9 +84,8 @@ pswrite(struct vplot* p, FILE* f)
 	/* Compute the ratio of Hz to paper/bbox size
 	 * so that we can use the Hz coordinates. */
 
-	fprintf(f, "/mm  { 72 mul 258 div 10 mul } def\n");
-	fprintf(f, "/Hz1 { 210 mm F1max F1min sub div mul } def\n");
-	fprintf(f, "/Hz2 { 297 mm F2max F2min sub div mul } def\n");
+	fprintf(f, "/Hz1 { 595 F1max F1min sub div mul } def\n");
+	fprintf(f, "/Hz2 { 841 F2max F2min sub div mul } def\n");
 	fprintf(f, "/hzw { F1max F1min sub Hz1 } def\n");
 	fprintf(f, "/hzh { F2max F2min sub Hz2 } def\n");
 	fprintf(f, "\n");
