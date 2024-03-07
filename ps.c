@@ -30,7 +30,7 @@ psrgb(FILE *f, uint32_t rgb) {
 }
 
 static void
-psgroup(struct group* g, FILE* f, uint32_t rgb)
+psgroup(struct group* g, FILE* f)
 {
 	struct vowel* v;
 	if (g == NULL)
@@ -38,7 +38,8 @@ psgroup(struct group* g, FILE* f, uint32_t rgb)
 	fprintf(f, "\n");
 	if (g->label)
 		fprintf(f, "%% %s\n", g->label);
-	psrgb(f, rgb);
+	g->color = rgb(g->color);
+	psrgb(f, g->color);
 	for (v = g->head; v; v = v->next)
 		psvow(v, f);
 }
@@ -46,7 +47,6 @@ psgroup(struct group* g, FILE* f, uint32_t rgb)
 int
 pswrite(struct vplot* p, FILE* f)
 {
-	unsigned n = 0;
 	struct group* g = NULL;
 	if (p == NULL || f == NULL)
 		return -1;
@@ -167,16 +167,15 @@ pswrite(struct vplot* p, FILE* f)
 	fprintf(f, "\nF1min Hz1 neg F2min Hz2 neg translate\n");
 
 	/* Draw the actual vowels */
-	for (n = 0, g = p->head; g; n++, g = g->next) {
-		psgroup(g, f, rgb(n));
-	}
+	for (g = p->head; g; g = g->next)
+		psgroup(g, f);
 	fprintf(f, "\n");
 
 	/* Display the group labels */
 	fprintf(f, "F1min 50 add Hz1 F2max 100 sub Hz2 translate\n");
 	fprintf(f, "/Charis-SIL findfont 15 scalefont setfont\n");
-	for (n = 0, g = p->head; g; n++, g = g->next) {
-		psrgb(f, rgb(n));
+	for (g = p->head; g; g = g->next) {
+		psrgb(f, g->color);
 		fprintf(f, "0 20 neg translate 0 0 moveto\n");
 		fprintf(f, "(%s) show\n", g->label);
 	}

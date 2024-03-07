@@ -6,6 +6,7 @@
 struct group {
 	int size;
 	char* label;
+	uint32_t color;
 	unsigned F1min;
 	unsigned F1max;
 	unsigned F2min;

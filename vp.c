@@ -77,8 +77,10 @@ main(int argc, char** argv)
 	if ((p = calloc(1, sizeof(struct vplot))) == NULL)
 		err(1, NULL);
 
-	while ((g = getgroup(ifp)))
+	while ((g = getgroup(ifp))) {
+		g->color = p->size;
 		addgroup(g, p);
+	}
 
 	/* adjust the canvas */
 	p->F1min = D(p->F1min);
