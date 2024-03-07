@@ -17,17 +17,16 @@ svgvow(struct vowel* v, FILE* f)
 {
 	if (v == NULL)
 		return;
-	fprintf(f, "<circle cx='%u' cy='%u' r='6' fill='orange'/>",
+	fprintf(f, "<circle cx='%u' cy='%u' r='6' fill='orange'/>\n",
 		v->F1, v->F2);
-	/*
-	fprintf(f, "(%s) ", v->label ? v->label: "");
-	if (v->G1 && v->G2)
-		fprintf(f, "%4u %4u arrow", v->G1, v->G2);
-<line x1="50" y1="50" x2="200" y2="200" stroke="blue" stroke-width="4" />
-	else
-		fprintf(f, "dot");
-	*/
-	fprintf(f, "\n");
+	if (v->label) {
+		/*fprintf(f, "(%s) ", v->label);*/
+	}
+	if (v->G1 && v->G2) {
+		fprintf(f, "<line x1='%u' y1='%u' x2='%u' y2='%u'\n",
+			v->F1, v->F2, v->G1, v->G2);
+		fprintf(f, "\tstroke='blue' stroke-width='4'/>\n");
+	}
 }
 
 /*
@@ -90,7 +89,6 @@ svgwrite(struct vplot* p, FILE* f)
 	for (n = 0, g = p->head; g; n++, g = g->next) {
 		svggroup(g, f, rgb(n));
 	}
-	fprintf(f, "\n");
 
 	/* Display the group labels */
 
