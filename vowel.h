@@ -3,6 +3,7 @@
 
 struct vowel {
 	char* label;
+	uint32_t color;
 	unsigned F1, F2;
 	unsigned G1, G2;
 /* F1 and F2 are formants of the vowel,

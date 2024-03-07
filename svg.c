@@ -11,33 +11,23 @@
 #define SVGURI "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"
 #define SVGXML "http://www.w3.org/2000/svg"
 
-
 static void
 svgvow(struct vowel* v, FILE* f)
 {
 	if (v == NULL)
 		return;
-	fprintf(f, "<circle cx='%u' cy='%u' r='6' fill='orange'/>\n",
-		v->F1, v->F2);
+	fprintf(f, "<circle cx='%u' cy='%u' r='6' fill='#%06x'/>\n",
+		v->F1, v->F2, v->color);
 	if (v->label) {
 		/*fprintf(f, "(%s) ", v->label);*/
 	}
 	if (v->G1 && v->G2) {
 		fprintf(f, "<line x1='%u' y1='%u' x2='%u' y2='%u'\n",
 			v->F1, v->F2, v->G1, v->G2);
-		fprintf(f, "\tstroke='blue' stroke-width='4'/>\n");
+		fprintf(f, "\tstroke='#%06x' stroke-width='4'/>\n",
+			v->color);
 	}
 }
-
-/*
-static void
-svgrgb(FILE *f, uint32_t rgb) {
-	fprintf(f, "%f %f %f setrgbcolor\n",
-		((rgb & 0xff0000) >> 16) / 255.0,
-		((rgb & 0x00ff00) >>  8) / 255.0,
-		((rgb & 0x0000ff) >>  0) / 255.0);
-}
-*/
 
 static void
 svggroup(struct group* g, FILE* f)
@@ -48,8 +38,10 @@ svggroup(struct group* g, FILE* f)
 	if (g->label)
 		fprintf(f, "<!-- %s -->\n", g->label);
 	fprintf(f, "<g>\n");
-	for (v = g->head; v; v = v->next)
+	for (v = g->head; v; v = v->next) {
+		v->color = g->color;
 		svgvow(v, f);
+	}
 	fprintf(f, "</g>\n\n");
 }
 
@@ -84,8 +76,10 @@ svgwrite(struct vplot* p, FILE* f)
 	/* FIXME ticks, in HZ and Bark */
 
 	/* Draw the actual vowels */
-	for (g = p->head; g; g = g->next)
+	for (g = p->head; g; g = g->next) {
+		g->color = rgb(g->color);
 		svggroup(g, f);
+	}
 
 	/* Display the group labels */
 
