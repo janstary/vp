@@ -7,6 +7,7 @@
 .Sh SYNOPSIS
 .Nm
 .Op Fl e
+.Op Fl g
 .Op Ar input Op Ar output
 .Sh DESCRIPTION
 .Nm
@@ -64,7 +65,10 @@ This can be used to label groups of vowels:
 Groups are given different colors.
 With the
 .Fl e
-option, an ellipse is drawn around a group.
+option, an ellipse is drawn around each group.
+With the
+.Fl g
+option, the center of gravity is drawn for each group.
 .Pp
 Without arguments,
 .Nm
@@ -93,6 +97,8 @@ The options are as follows:
 .Bl -tag -width xx -compact
 .It Fl e
 Draw an ellipse around every group of vowels.
+.It Fl g
+Draw the center of gravity of every group.
 .El
 .Sh AUTHORS
 .An Jan Starý Aq Mt hans@stare.cz

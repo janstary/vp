@@ -20,6 +20,7 @@
 #define U(F) ((F - (F % 100)) + 200)
 
 int eflag = 0;
+int gflag = 0;
 
 static void
 usage(void)
@@ -41,9 +42,12 @@ main(int argc, char** argv)
 	FILE *ofp = stdout;
 	size_t len = 0;
 
-	while ((c = getopt(argc, argv, "e")) != -1) switch (c) {
+	while ((c = getopt(argc, argv, "eg")) != -1) switch (c) {
 		case 'e':
 			eflag = 1;
+			break;
+		case 'g':
+			gflag = 1;
 			break;
 		default:
 			usage();
@@ -88,6 +92,8 @@ main(int argc, char** argv)
 
 	while ((g = getgroup(ifp))) {
 		g->color = p->size;
+		if (gflag) gravity(g);
+		if (eflag) ellipse(g);
 		addgroup(g, p);
 	}
 

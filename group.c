@@ -34,6 +34,46 @@ adjgroup(struct group* g, struct vowel* v)
 	return 0;
 }
 
+void
+gravity(struct group* g)
+{
+	float gx = 0;
+	float gy = 0;
+	struct vowel* v;
+	if (g == NULL)
+		return;
+	if (g->size == 0)
+		return;
+	for (v = g->head; v; v = v->next) {
+		gx += v->F1;
+		gy += v->F2;
+	}
+	g->gx = gx / g->size;
+	g->gy = gy / g->size;
+}
+
+void
+ellipse(struct group* g)
+{
+	if (g == NULL)
+		return;
+	if (g->size == 0)
+		return;
+	if ((g->e = calloc(1, sizeof(struct ellipse))) == NULL)
+		err(1, NULL);
+	if (g->gx && g->gy) {
+		g->e->x = g->gx;
+		g->e->y = g->gx;
+	} else {
+		gravity(g);
+		g->e->x = g->gx;
+		g->e->y = g->gy;
+		g->gx = 0;
+		g->gy = 0;
+	}
+	/* FIXME major and minor axis, slope */
+}
+
 static int
 addvow(struct vowel* v, struct group* g)
 {

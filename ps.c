@@ -13,11 +13,11 @@ psvow(struct vowel* v, FILE* f)
 	if (v == NULL)
 		return;
 	fprintf(f, "(%s) ", v->label ? v->label: "");
-	fprintf(f, "%4u %4u ", v->F1, v->F2);
+	fprintf(f, "%u %u ", v->F1, v->F2);
 	if (v->G1 && v->G2)
-		fprintf(f, "%4u %4u arrow", v->G1, v->G2);
+		fprintf(f, "%u %u 5 arrow", v->G1, v->G2);
 	else
-		fprintf(f, "dot");
+		fprintf(f, "5 dot");
 	fprintf(f, "\n");
 }
 
@@ -42,6 +42,13 @@ psgroup(struct group* g, FILE* f)
 	psrgb(f, g->color);
 	for (v = g->head; v; v = v->next)
 		psvow(v, f);
+	if (g->gx && g->gy) {
+		fprintf(f, "%% center\n");
+		fprintf(f, "() %u %u 10 dot\n", g->gx, g->gy);
+	}
+	if (g->e) {
+		/* FIXME ellipse */
+	}
 }
 
 int
@@ -96,21 +103,21 @@ pswrite(struct vplot* p, FILE* f)
 	fprintf(f, "\n");
 
 	fprintf(f, "/dot {\n");
-	fprintf(f, "\tHz2 round exch\n");
-	fprintf(f, "\tHz1 round exch\n");
-	fprintf(f, "\texch dup 3 1 roll\n");
-	fprintf(f, "\texch dup 3 1 roll\n");
-	fprintf(f, "\tnewpath 5 0 360 arc closepath fill\n");
-	fprintf(f, "\tmoveto 6 -6 rmoveto\n");
+	fprintf(f, "\t/r exch def\n");
+	fprintf(f, "\tHz2 round /y exch def\n");
+	fprintf(f, "\tHz1 round /x exch def\n");
+	fprintf(f, "\tnewpath x y r 0 360 arc closepath fill\n");
+	fprintf(f, "\tx y moveto r 1 add r 1 add neg rmoveto\n");
 	fprintf(f, "\tshow\n} def\n");
 	fprintf(f, "\n");
 
 	fprintf(f, "/adict 20 dict def\n");
 	fprintf(f, "adict begin /mtrx matrix def end\n");
 	fprintf(f, "/arrow {\n\tadict begin\n");
+	fprintf(f, "\t/ds exch def\n");
 	fprintf(f, "\t/heady exch def /headx exch def\n");
 	fprintf(f, "\t/taily exch def /tailx exch def\n");
-	fprintf(f, "\ttailx taily dot\n");
+	fprintf(f, "\ttailx taily ds dot\n");
 
 	fprintf(f, "\t/tailx tailx Hz1 round def\n");
 	fprintf(f, "\t/taily taily Hz2 round def\n");
