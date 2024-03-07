@@ -19,10 +19,12 @@
 #define D(F) ((F - (F % 100)) - 100)
 #define U(F) ((F - (F % 100)) + 200)
 
+int eflag = 0;
+
 static void
 usage(void)
 {
-	fprintf(stderr, "usage: vp [-aegl] [[input] [output]]\n");
+	fprintf(stderr, "usage: vp [-e] [[input] [output]]\n");
 }
 
 int
@@ -39,7 +41,14 @@ main(int argc, char** argv)
 	FILE *ofp = stdout;
 	size_t len = 0;
 
-	while ((c = getopt(argc, argv, "aegl")) != -1) switch (c) {
+	while ((c = getopt(argc, argv, "e")) != -1) switch (c) {
+		case 'e':
+			eflag = 1;
+			break;
+		default:
+			usage();
+			return 1;
+			break;
 	}
 	argc -= optind;
 	argv += optind;
