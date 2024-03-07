@@ -16,17 +16,19 @@ svgvow(struct vowel* v, FILE* f)
 {
 	if (v == NULL)
 		return;
+	fprintf(f, "<g>");
+	if (v->label)
+		fprintf(f, "<!-- %s --> ", v->label);
+	fprintf(f, "\n");
 	fprintf(f, "<circle cx='%u' cy='%u' r='6' fill='#%06x'/>\n",
 		v->F1, v->F2, v->color);
-	if (v->label) {
-		/*fprintf(f, "(%s) ", v->label);*/
-	}
 	if (v->G1 && v->G2) {
 		fprintf(f, "<line x1='%u' y1='%u' x2='%u' y2='%u'\n",
 			v->F1, v->F2, v->G1, v->G2);
 		fprintf(f, "\tstroke='#%06x' stroke-width='4'/>\n",
 			v->color);
 	}
+	fprintf(f, "</g>\n");
 }
 
 static void
@@ -35,14 +37,18 @@ svggroup(struct group* g, FILE* f)
 	struct vowel* v;
 	if (g == NULL)
 		return;
+	fprintf(f, "<g>");
 	if (g->label)
-		fprintf(f, "<!-- %s -->\n", g->label);
-	fprintf(f, "<g>\n");
+		fprintf(f, "<!-- %s -->", g->label);
+	fprintf(f, "\n");
 	for (v = g->head; v; v = v->next) {
 		v->color = g->color;
 		svgvow(v, f);
 	}
-	fprintf(f, "</g>\n\n");
+	fprintf(f, "</g>");
+	if (g->label)
+		fprintf(f, "<!-- %s -->", g->label);
+	fprintf(f, "\n\n");
 }
 
 int
@@ -70,7 +76,7 @@ svgwrite(struct vplot* p, FILE* f)
 
 	fprintf(f, "<rect x='%u' y='%u' width='%u' height='%u'\n",
 		p->F1min, p->F2min, p->F1max-p->F1min, p->F2max-p->F2min);
-	fprintf(f, "\tfill='white' stroke-width='1' stroke='black'/>\n");
+	fprintf(f, "\tfill='white' stroke-width='2' stroke='black'/>\n");
 	fprintf(f, "\n");
 
 	/* FIXME ticks, in HZ and Bark */
