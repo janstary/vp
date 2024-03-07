@@ -61,16 +61,7 @@ ellipse(struct group* g)
 		return;
 	if ((g->e = calloc(1, sizeof(struct ellipse))) == NULL)
 		err(1, NULL);
-	if (g->gx && g->gy) {
-		g->e->x = g->gx;
-		g->e->y = g->gx;
-	} else {
-		gravity(g);
-		g->e->x = g->gx;
-		g->e->y = g->gy;
-		g->gx = 0;
-		g->gy = 0;
-	}
+	/* FIXME center of gravity is a focus */
 	/* FIXME major and minor axis, slope */
 }
 
