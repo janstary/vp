@@ -1,6 +1,6 @@
 BINS	= vp
 MANS	= vp.1
-OBJS	= vowel.o group.o vplot.o color.o ps.o
+OBJS	= vowel.o group.o vplot.o color.o svg.o ps.o
 TEST	= male-back.txt female-front.txt diphthongs.txt
 
 PREFIX	= ${HOME}
@@ -17,6 +17,7 @@ vowel.o: vowel.c vowel.h
 group.o: group.c group.h
 vplot.o: vplot.c vplot.h
 color.o: color.c color.h
+svg.o: svg.c svg.h
 ps.o: ps.c ps.h
 
 .SUFFIXES: .c .o
@@ -25,9 +26,8 @@ ps.o: ps.c ps.h
 	$(CC) $(CFLAGS) -c $<
 
 test: ${BINS} ${TEST}
-	./vp male-back.txt
-	./vp female-front.txt
-	./vp diphthongs.txt
+	for i in ${TEST} ; do ./vp $$i ; done
+	for i in ${TEST} ; do ./vp $$i $${i%.txt}.svg; done
 
 lint: ${MANS}
 	mandoc -Tlint -Wstyle ${MANS}

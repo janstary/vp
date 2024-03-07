@@ -9,12 +9,12 @@
 #include "vowel.h"
 #include "group.h"
 #include "vplot.h"
+#include "svg.h"
 #include "ps.h"
 
 #define PS  1
 #define PDF 2
 #define SVG 3
-#define PNG 4
 
 #define D(F) ((F - (F % 100)) - 100)
 #define U(F) ((F - (F % 100)) + 200)
@@ -57,6 +57,8 @@ main(int argc, char** argv)
 			errx(1, "%s: output format unknown", ofile);
 		if ((strcmp(suf, ".ps")) == 0) {
 			otype = PS;
+		} else if ((strcmp(suf, ".svg")) == 0) {
+			otype = SVG;
 		} else {
 			errx(1, "%s: output format unknown", ofile);
 		}
@@ -87,6 +89,9 @@ main(int argc, char** argv)
 	switch (otype) {
 		case PS:
 			pswrite(p, ofp);
+			break;
+		case SVG:
+			svgwrite(p, ofp);
 			break;
 		default:
 			break;
