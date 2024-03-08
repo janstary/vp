@@ -13,9 +13,9 @@ psvow(struct vowel* v, FILE* f)
 	if (v == NULL)
 		return;
 	fprintf(f, "(%s) ", v->label ? v->label: "");
-	fprintf(f, "%u %u ", v->F[0], v->F[1]);
-	if (v->F[2] && v->F[3])
-		fprintf(f, "%u %u 5 arrow", v->F[2], v->F[3]);
+	fprintf(f, "%u %u ", v->V[0]->F1, v->V[0]->F2);
+	if (v->V[1])
+		fprintf(f, "%u %u 5 arrow", v->V[1]->F1, v->V[1]->F2);
 	else
 		fprintf(f, "5 dot");
 	fprintf(f, "\n");
@@ -42,6 +42,7 @@ psgroup(struct group* g, FILE* f)
 	psrgb(f, g->color);
 	for (v = g->head; v; v = v->next)
 		psvow(v, f);
+	/*
 	if (g->grav[0] && g->grav[1]) {
 		fprintf(f, "%% center of gravity\n");
 		fprintf(f, "() %u %u 10 dot\n", g->grav[0], g->grav[1]);
@@ -50,9 +51,7 @@ psgroup(struct group* g, FILE* f)
 		fprintf(f, "%% the other center of gravity\n");
 		fprintf(f, "() %u %u 10 dot\n", g->grav[2], g->grav[3]);
 	}
-	if (g->e) {
-		/* FIXME an ellipse or two */
-	}
+	*/
 }
 
 int
@@ -86,10 +85,10 @@ pswrite(struct vplot* p, FILE* f)
 	 * Also, we can simply translate back down to F1 neg F2 neg
 	 * and have the dots be placed inside the actual range. */
 
-	fprintf(f, "/F1min { %4u } def\n", p->F1min);
-	fprintf(f, "/F1max { %4u } def\n", p->F1max);
-	fprintf(f, "/F2min { %4u } def\n", p->F2min);
-	fprintf(f, "/F2max { %4u } def\n", p->F2max);
+	fprintf(f, "/F1min { %4u } def\n", p->min->F1);
+	fprintf(f, "/F1max { %4u } def\n", p->max->F1);
+	fprintf(f, "/F2min { %4u } def\n", p->min->F2);
+	fprintf(f, "/F2max { %4u } def\n", p->max->F2);
 	fprintf(f, "\n");
 
 	/* Compute the ratio of Hz to paper/bbox size

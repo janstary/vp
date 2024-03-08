@@ -6,18 +6,29 @@
 
 #include "vowel.h"
 #include "group.h"
+#include "stats.h"
 
 static void
-adjby(struct group* g, int32_t* F)
+adjbypoint(struct group* g, struct point* p)
 {
-	if (F[0] < g->min[0] || g->min[0] == 0)
-		g->min[0] = F[0];
-	if (F[0] > g->max[0])
-		g->max[0] = F[0];
-	if (F[1] < g->min[1] || g->min[1] == 0)
-		g->min[1] = F[1];
-	if (F[1] > g->max[1])
-		g->max[1] = F[1];
+	if (g == NULL || p == NULL)
+		return;
+	if (g->min == NULL) {
+		g->min = mkpoint(p->F1, p->F2);
+	} else {
+		if (p->F1 < g->min->F1)
+			g->min->F1 = p->F1;
+		if (p->F2 < g->min->F2)
+			g->min->F2 = p->F2;
+	}
+	if (g->max == NULL) {
+		g->max = mkpoint(p->F1, p->F2);
+	} else {
+		if (p->F1 > g->max->F1)
+			g->max->F1 = p->F1;
+		if (p->F2 > g->max->F2)
+			g->max->F2 = p->F2;
+	}
 }
 
 static void
@@ -25,14 +36,14 @@ adjgroup(struct group* g, struct vowel* v)
 {
 	if (g == NULL || v == NULL)
 		return;
-	adjby(g, v->F);
-	if (v->F[2] && v->F[3])
-		adjby(g, v->F+2);
+	adjbypoint(g, v->V[0]);
+	adjbypoint(g, v->V[1]);
 }
 
 void
 gravity(struct group* g)
 {
+	/*
 	int i;
 	float grav[4];
 	struct vowel* v;
@@ -45,19 +56,20 @@ gravity(struct group* g)
 			grav[i] += v->F[i];
 		g->grav[i] = grav[i] / g->size;
 	}
+	*/
 }
 
 void
 ellipse(struct group* g)
 {
+	/*
 	if (g == NULL)
 		return;
 	if (g->size == 0)
 		return;
 	if ((g->e = calloc(1, sizeof(struct ellipse))) == NULL)
 		err(1, NULL);
-	/* FIXME center of gravity is a focus */
-	/* FIXME major and minor axis, slope */
+	*/
 }
 
 static int

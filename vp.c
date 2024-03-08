@@ -102,10 +102,10 @@ main(int argc, char** argv)
 	}
 
 	/* adjust the canvas */
-	p->F1min = D(p->F1min);
-	p->F1max = U(p->F1max);
-	p->F2min = D(p->F2min);
-	p->F2max = U(p->F2max);
+	p->min->F1 = D(p->min->F1);
+	p->max->F1 = U(p->max->F1);
+	p->min->F2 = D(p->min->F2);
+	p->max->F2 = U(p->max->F2);
 
 	switch (otype) {
 		case PS:

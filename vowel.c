@@ -4,41 +4,19 @@
 #include <ctype.h>
 #include <err.h>
 
+#include "point.h"
 #include "vowel.h"
 
 static struct vowel*
-mkvow(char* label, uint16_t F1, uint16_t F2, uint16_t G1, uint16_t G2)
+mkvow(char* label, struct point* P1, struct point* P2)
 {
 	struct vowel* v = NULL;
-	if (F1 == 0 || F2 == 0)
-		return NULL;
 	if ((v = calloc(1, sizeof(struct vowel))) == NULL)
 		err(1, NULL);
 	v->label = label;
-	v->F[0] = F1;
-	v->F[1] = F2;
-	v->F[2] = G1;
-	v->F[3] = G2;
+	v->V[0] = P1;
+	v->V[1] = P2;
 	return v;
-}
-
-uint16_t
-getnum(char** line)
-{
-	uint16_t F = 0;
-	char* p = NULL;
-	const char* e = NULL;
-	while (*line && isspace(**line))
-		(*line)++;
-	if ((p = strsep(line, " \t\n")) == NULL) {
-		warnx("premature end of line");
-		return 0;
-	}
-	if ((F = strtonum(p, 1, 8000, &e)) == 0) {
-		warnx("'%s' %s", p, e);
-		return 0;
-	}
-	return F;
 }
 
 struct vowel*
@@ -46,8 +24,8 @@ getvow(char* line)
 {
 	char* l = NULL;
 	char* p = NULL;
-	uint16_t F1 = 0, F2 = 0;
-	uint16_t G1 = 0, G2 = 0;
+	struct point* P1;
+	struct point* P2;
 	if (line == NULL || *line == '\0')
 		return NULL;
 	while (isspace(*line))
@@ -56,25 +34,17 @@ getvow(char* line)
 		p = strsep(&line, " \t\n");
 		l = strdup(p);
 	}
-	if ((F1 = getnum(&line)) == 0) {
-		warnx("invalid F1");
-		return NULL;
-	}
-	if ((F2 = getnum(&line)) == 0) {
-		warnx("invalid F1");
+	if ((P1 = getpoint(&line)) == NULL) {
+		warnx("invalid point\n");
 		return NULL;
 	}
 	if (line == NULL) {
-		/* a monophthong ends here */
-		return mkvow(l, F1, F2, 0, 0);
+		/* monophthong ends here */
+		return mkvow(l, P1, NULL);
 	}
-	if ((G1 = getnum(&line)) == 0) {
-		warnx("invalid G1");
+	if ((P2 = getpoint(&line)) == NULL) {
+		warnx("invalid point\n");
 		return NULL;
 	}
-	if ((G2 = getnum(&line)) == 0) {
-		warnx("invalid G2");
-		return NULL;
-	}
-	return mkvow(l, F1, F2, G1, G2);
+	return mkvow(l, P1, P2);
 }

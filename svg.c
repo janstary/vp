@@ -12,6 +12,29 @@
 #define SVGXML "http://www.w3.org/2000/svg"
 
 static void
+svgpoint(struct point* p, FILE* f, uint32_t color)
+{
+	if (f == NULL
+	||  p == NULL)
+		return;
+	fprintf(f, "<circle cx='%u' cy='%u' r='5' fill='#%06x'/>\n",
+		p->F1, p->F2, color);
+}
+
+static void
+svgline(struct point* p1, struct point* p2, FILE* f, uint32_t color)
+{
+	if (f == NULL
+	|| p1 == NULL
+	|| p2 == NULL)
+		return;
+	fprintf(f,
+		"<line x1='%u' y1='%u' x2='%u' y2='%u'\n"
+		"\tstroke='#%06x' stroke-width='4'/>\n",
+		p1->F1, p1->F2, p2->F1, p2->F2, color);
+}
+
+static void
 svgvow(struct vowel* v, FILE* f)
 {
 	if (v == NULL)
@@ -20,13 +43,11 @@ svgvow(struct vowel* v, FILE* f)
 	if (v->label)
 		fprintf(f, "<!-- %s --> ", v->label);
 	fprintf(f, "\n");
-	fprintf(f, "<circle cx='%u' cy='%u' r='5' fill='#%06x'/>\n",
-		v->F[0], v->F[1], v->color);
-	if (v->F[2] && v->F[3]) {
-		fprintf(f, "<line x1='%u' y1='%u' x2='%u' y2='%u'\n",
-			v->F[0], v->F[1], v->F[2], v->F[3]);
-		fprintf(f, "\tstroke='#%06x' stroke-width='4'/>\n",
-			v->color);
+	if (v->V[0])
+		svgpoint(v->V[0], f, v->color);
+	if (v->V[1]) {
+		svgpoint(v->V[1], f, v->color);
+		svgline(v->V[0], v->V[1], f, v->color);
 	}
 	fprintf(f, "</g>\n");
 }
@@ -45,6 +66,7 @@ svggroup(struct group* g, FILE* f)
 		v->color = g->color;
 		svgvow(v, f);
 	}
+	/*
 	if (g->grav[0] && g->grav[1]) {
 		fprintf(f, "<circle cx='%u' cy='%u' r='10' "
 			"fill='#%06x'/>\n",g->grav[0],g->grav[1],g->color);
@@ -53,6 +75,7 @@ svggroup(struct group* g, FILE* f)
 		fprintf(f, "<circle cx='%u' cy='%u' r='10' "
 			"fill='#%06x'/>\n",g->grav[2],g->grav[3],g->color);
 	}
+	*/
 	fprintf(f, "</g>");
 	if (g->label)
 		fprintf(f, "<!-- %s -->", g->label);
@@ -72,9 +95,9 @@ svgwrite(struct vplot* p, FILE* f)
 	fprintf(f, "\t'" SVGVER "'\n");
 	fprintf(f, "\t'" SVGURI "'>\n");
 	fprintf(f, "<svg width='%u' height='%u'",
-		p->F1max - p->F1min, p->F2max - p->F2min);
+		p->max->F1 - p->min->F1, p->max->F2 - p->min->F2);
 	fprintf(f, " viewBox='%u %u %u %u'\n",
-		p->F1min, p->F2min, p->F1max, p->F2max);
+		p->min->F1, p->min->F2, p->max->F1, p->max->F2);
 	fprintf(f, "\txmlns='" SVGXML "'>\n");
 	fprintf(f, "\n");
 
@@ -82,10 +105,12 @@ svgwrite(struct vplot* p, FILE* f)
 
 	/* axes and ticks  */
 
-	fprintf(f, "<rect x='%u' y='%u' width='%u' height='%u'\n",
-		p->F1min, p->F2min, p->F1max-p->F1min, p->F2max-p->F2min);
-	fprintf(f, "\tfill='white' stroke-width='2' stroke='black'/>\n");
-	fprintf(f, "\n");
+	fprintf(f,
+		"<rect x='%u' y='%u' width='%u' height='%u'\n"
+		"\tfill='white' stroke-width='2' stroke='black'/>\n\n",
+		p->min->F1, p->min->F2,
+		p->max->F1 - p->min->F1,
+		p->max->F2 - p->min->F2);
 
 	/* FIXME ticks, in HZ and Bark */
 

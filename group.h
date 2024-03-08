@@ -4,20 +4,20 @@
 #include <stdint.h>
 #include "vowel.h"
 
-struct ellipse {
-	unsigned x, y;
-	unsigned a, b;
-	float s;
+struct cloud {
+	struct point c;
+	float min, maj;
+	float slope;
 };
 
 struct group {
 	int size;
 	char* label;
 	uint32_t color;
-	unsigned min[2];
-	unsigned max[2];
-	int32_t grav[4];
-	struct ellipse* e;
+	struct point* min;
+	struct point* max;
+	struct point* G[2];
+	struct cloud* E[2];
 	struct vowel* head;
 	struct vowel* tail;
 	struct group* next;

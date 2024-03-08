@@ -6,24 +6,32 @@
 #include <ctype.h>
 #include <err.h>
 
+#include "point.h"
 #include "vowel.h"
 #include "group.h"
 #include "vplot.h"
 
-int
+static void
 adjplot(struct vplot* p, struct group* g)
 {
 	if (p == NULL || p == NULL)
-		return -1;
-	if (g->min[0] < p->F1min || p->F1min == 0)
-		p->F1min = g->min[0];
-	if (g->max[0] > p->F1max)
-		p->F1max = g->max[0];
-	if (g->min[1] < p->F2min || p->F2min == 0)
-		p->F2min = g->min[1];
-	if (g->max[1] > p->F2max)
-		p->F2max = g->max[1];
-	return 0;
+		return;
+	if (p->min == NULL) {
+		p->min = mkpoint(g->min->F1, g->min->F2);
+	} else {
+		if (g->min->F1 < p->min->F1)
+			p->min->F1 = g->min->F1;
+		if (g->min->F2 < p->min->F2)
+			p->min->F2 = g->min->F2;
+	}
+	if (p->max == NULL) {
+		p->max = mkpoint(g->max->F1, g->max->F2);
+	} else {
+		if (g->max->F1 > p->max->F1)
+			p->max->F1 = g->max->F1;
+		if (g->max->F2 > p->max->F2)
+			p->max->F2 = g->max->F2;
+	}
 }
 
 int

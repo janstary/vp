@@ -6,10 +6,8 @@
 struct vplot {
 	int size;
 	char* label;
-	unsigned F1min;
-	unsigned F1max;
-	unsigned F2min;
-	unsigned F2max;
+	struct point* min;
+	struct point* max;
 	struct group* head;
 	struct group* tail;
 };

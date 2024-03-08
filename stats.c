@@ -7,11 +7,14 @@
 float
 cov(struct group* g, int i, int j)
 {
+	/*
 	float sum;
 	struct vowel* v;
 	for (sum = 0, v = g->head; v ; v = v->next)
 		sum += (v->F[i] - g->grav[i]) * (v->F[j] - g->grav[j]);
 	return sum / g->size;
+	*/
+	return 0;
 }
 
 void
