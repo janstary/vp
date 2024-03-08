@@ -6,10 +6,10 @@
 
 #include "point.h"
 
-static uint16_t
+static int
 getnum(char** line)
 {
-	uint16_t F = 0;
+	int F = 0;
 	char* p = NULL;
 	const char* e = NULL;
 	while (*line && isspace(**line))

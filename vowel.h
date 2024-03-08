@@ -14,4 +14,3 @@ struct vowel {
 struct vowel* getvow(char*);
 
 #endif
-
