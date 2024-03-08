@@ -42,16 +42,14 @@ psgroup(struct group* g, FILE* f)
 	psrgb(f, g->color);
 	for (v = g->head; v; v = v->next)
 		psvow(v, f);
-	/*
-	if (g->grav[0] && g->grav[1]) {
+	if (g->G[0]) {
 		fprintf(f, "%% center of gravity\n");
-		fprintf(f, "() %u %u 10 dot\n", g->grav[0], g->grav[1]);
+		fprintf(f, "() %u %u 10 dot\n", g->G[0]->F1, g->G[0]->F2);
 	}
-	if (g->grav[2] && g->grav[3]) {
+	if (g->G[1]) {
 		fprintf(f, "%% the other center of gravity\n");
-		fprintf(f, "() %u %u 10 dot\n", g->grav[2], g->grav[3]);
+		fprintf(f, "() %u %u 10 dot\n", g->G[1]->F1, g->G[1]->F2);
 	}
-	*/
 }
 
 int

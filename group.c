@@ -40,23 +40,36 @@ adjgroup(struct group* g, struct vowel* v)
 	adjbypoint(g, v->V[1]);
 }
 
-void
-gravity(struct group* g)
+static void
+gpoint(struct group* g, int i)
 {
-	/*
-	int i;
-	float grav[4];
+	float G1 = 0;
+	float G2 = 0;
 	struct vowel* v;
 	if (g == NULL)
 		return;
 	if (g->size == 0)
 		return;
-	for (i = 0; i < 4; i++) {
-		for (grav[i] = 0, v = g->head; v; v = v->next)
-			grav[i] += v->F[i];
-		g->grav[i] = grav[i] / g->size;
+	if (g->head->V[i] == NULL)
+		return;
+	for (v = g->head; v && v->V[i]; v = v->next) {
+		G1 += v->V[i]->F1;
+		G2 += v->V[i]->F2;
 	}
-	*/
+	G1 /= g->size;
+	G2 /= g->size;
+	g->G[i] = mkpoint((int) G1, (int) G2);
+}
+
+void
+gravity(struct group* g)
+{
+	if (g == NULL)
+		return;
+	if (g->size == 0)
+		return;
+	gpoint(g, 0);
+	gpoint(g, 1);
 }
 
 void
