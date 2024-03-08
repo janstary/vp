@@ -14,11 +14,9 @@ struct group {
 	int size;
 	char* label;
 	uint32_t color;
-	unsigned F1min;
-	unsigned F1max;
-	unsigned F2min;
-	unsigned F2max;
-	int32_t gx, gy;
+	unsigned min[2];
+	unsigned max[2];
+	int32_t grav[4];
 	struct ellipse* e;
 	struct vowel* head;
 	struct vowel* tail;

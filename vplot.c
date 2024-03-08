@@ -15,14 +15,14 @@ adjplot(struct vplot* p, struct group* g)
 {
 	if (p == NULL || p == NULL)
 		return -1;
-	if (g->F1min < p->F1min || p->F1min == 0)
-		p->F1min = g->F1min;
-	if (g->F1max > p->F1max)
-		p->F1max = g->F1max;
-	if (g->F2min < p->F2min || p->F2min == 0)
-		p->F2min = g->F2min;
-	if (g->F2max > p->F2max)
-		p->F2max = g->F2max;
+	if (g->min[0] < p->F1min || p->F1min == 0)
+		p->F1min = g->min[0];
+	if (g->max[0] > p->F1max)
+		p->F1max = g->max[0];
+	if (g->min[1] < p->F2min || p->F2min == 0)
+		p->F2min = g->min[1];
+	if (g->max[1] > p->F2max)
+		p->F2max = g->max[1];
 	return 0;
 }
 

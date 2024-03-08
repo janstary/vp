@@ -6,17 +6,6 @@
 
 #include "vowel.h"
 
-void
-prvow(struct vowel* v)
-{
-	if (v) {
-		printf("%u\t%u", v->F1, v->F2);
-		if (v->G1 && v->G2)
-			printf("\t%u\t%u", v->G1, v->G2);
-		putchar('\n');
-	}
-}
-
 static struct vowel*
 mkvow(char* label, uint16_t F1, uint16_t F2, uint16_t G1, uint16_t G2)
 {
@@ -26,10 +15,10 @@ mkvow(char* label, uint16_t F1, uint16_t F2, uint16_t G1, uint16_t G2)
 	if ((v = calloc(1, sizeof(struct vowel))) == NULL)
 		err(1, NULL);
 	v->label = label;
-	v->F1 = F1;
-	v->F2 = F2;
-	v->G1 = G1;
-	v->G2 = G2;
+	v->F[0] = F1;
+	v->F[1] = F2;
+	v->F[2] = G1;
+	v->F[3] = G2;
 	return v;
 }
 

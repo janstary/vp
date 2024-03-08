@@ -7,49 +7,44 @@
 #include "vowel.h"
 #include "group.h"
 
-static int
+static void
+adjby(struct group* g, int32_t* F)
+{
+	if (F[0] < g->min[0] || g->min[0] == 0)
+		g->min[0] = F[0];
+	if (F[0] > g->max[0])
+		g->max[0] = F[0];
+	if (F[1] < g->min[1] || g->min[1] == 0)
+		g->min[1] = F[1];
+	if (F[1] > g->max[1])
+		g->max[1] = F[1];
+}
+
+static void
 adjgroup(struct group* g, struct vowel* v)
 {
 	if (g == NULL || v == NULL)
-		return -1;
-	if (v->F1 < g->F1min || g->F1min == 0)
-		g->F1min = v->F1;
-	if (v->F1 > g->F1max)
-		g->F1max = v->F1;
-	if (v->F2 < g->F2min || g->F2min == 0) {
-		g->F2min = v->F2;
-	}
-	if (v->F2 > g->F2max)
-		g->F2max = v->F2;
-	if (v->G1 && v->G2) {
-		if (v->G1 < g->F1min || g->F1min == 0)
-			g->F1min = v->G1;
-		if (v->G1 > g->F1max)
-			g->F1max = v->G1;
-		if (v->G2 < g->F2min || g->F2min == 0)
-			g->F2min = v->G2;
-		if (v->G2 > g->F2max)
-			g->F2max = v->G2;
-	}
-	return 0;
+		return;
+	adjby(g, v->F);
+	if (v->F[2] && v->F[3])
+		adjby(g, v->F+2);
 }
 
 void
 gravity(struct group* g)
 {
-	float gx = 0;
-	float gy = 0;
+	int i;
+	float grav[4];
 	struct vowel* v;
 	if (g == NULL)
 		return;
 	if (g->size == 0)
 		return;
-	for (v = g->head; v; v = v->next) {
-		gx += v->F1;
-		gy += v->F2;
+	for (i = 0; i < 4; i++) {
+		for (grav[i] = 0, v = g->head; v; v = v->next)
+			grav[i] += v->F[i];
+		g->grav[i] = grav[i] / g->size;
 	}
-	g->gx = gx / g->size;
-	g->gy = gy / g->size;
 }
 
 void
@@ -81,21 +76,6 @@ addvow(struct vowel* v, struct group* g)
 	}
 	adjgroup(g, v);
 	return 0;
-}
-
-void
-prgroup(struct group* g)
-{
-	struct vowel* v;
-	if (g == NULL)
-		return;
-	if (g->size == 0)
-		return;
-	if (g->label)
-		printf("# %s\n", g->label);
-	for (v = g->head; v; v = v->next)
-		prvow(v);
-	putchar('\n');
 }
 
 struct group*

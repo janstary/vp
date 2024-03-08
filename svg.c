@@ -21,10 +21,10 @@ svgvow(struct vowel* v, FILE* f)
 		fprintf(f, "<!-- %s --> ", v->label);
 	fprintf(f, "\n");
 	fprintf(f, "<circle cx='%u' cy='%u' r='5' fill='#%06x'/>\n",
-		v->F1, v->F2, v->color);
-	if (v->G1 && v->G2) {
+		v->F[0], v->F[1], v->color);
+	if (v->F[2] && v->F[3]) {
 		fprintf(f, "<line x1='%u' y1='%u' x2='%u' y2='%u'\n",
-			v->F1, v->F2, v->G1, v->G2);
+			v->F[0], v->F[1], v->F[2], v->F[3]);
 		fprintf(f, "\tstroke='#%06x' stroke-width='4'/>\n",
 			v->color);
 	}
@@ -45,9 +45,13 @@ svggroup(struct group* g, FILE* f)
 		v->color = g->color;
 		svgvow(v, f);
 	}
-	if (g->gx && g->gy) {
+	if (g->grav[0] && g->grav[1]) {
 		fprintf(f, "<circle cx='%u' cy='%u' r='10' "
-			"fill='#%06x'/>\n", g->gx, g->gy, g->color);
+			"fill='#%06x'/>\n",g->grav[0],g->grav[1],g->color);
+	}
+	if (g->grav[2] && g->grav[2]) {
+		fprintf(f, "<circle cx='%u' cy='%u' r='10' "
+			"fill='#%06x'/>\n",g->grav[2],g->grav[3],g->color);
 	}
 	fprintf(f, "</g>");
 	if (g->label)

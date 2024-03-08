@@ -13,9 +13,9 @@ psvow(struct vowel* v, FILE* f)
 	if (v == NULL)
 		return;
 	fprintf(f, "(%s) ", v->label ? v->label: "");
-	fprintf(f, "%u %u ", v->F1, v->F2);
-	if (v->G1 && v->G2)
-		fprintf(f, "%u %u 5 arrow", v->G1, v->G2);
+	fprintf(f, "%u %u ", v->F[0], v->F[1]);
+	if (v->F[2] && v->F[3])
+		fprintf(f, "%u %u 5 arrow", v->F[2], v->F[3]);
 	else
 		fprintf(f, "5 dot");
 	fprintf(f, "\n");
@@ -42,12 +42,16 @@ psgroup(struct group* g, FILE* f)
 	psrgb(f, g->color);
 	for (v = g->head; v; v = v->next)
 		psvow(v, f);
-	if (g->gx && g->gy) {
+	if (g->grav[0] && g->grav[1]) {
 		fprintf(f, "%% center of gravity\n");
-		fprintf(f, "() %u %u 10 dot\n", g->gx, g->gy);
+		fprintf(f, "() %u %u 10 dot\n", g->grav[0], g->grav[1]);
+	}
+	if (g->grav[2] && g->grav[3]) {
+		fprintf(f, "%% the other center of gravity\n");
+		fprintf(f, "() %u %u 10 dot\n", g->grav[2], g->grav[3]);
 	}
 	if (g->e) {
-		/* FIXME ellipse */
+		/* FIXME an ellipse or two */
 	}
 }
 
