@@ -15,7 +15,7 @@ static uint32_t colors[] = {
 #define numcol (sizeof(colors) / sizeof(uint32_t))
 
 uint32_t
-rgb(unsigned c)
+rgb(int c)
 {
 	return colors[c % numcol];
 }

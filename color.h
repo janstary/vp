@@ -3,6 +3,6 @@
 
 #include <stdint.h>
 
-uint32_t rgb(unsigned);
+uint32_t rgb(int);
 
 #endif
