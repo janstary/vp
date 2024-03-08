@@ -1,6 +1,6 @@
 BINS	= vp
 MANS	= vp.1
-OBJS	= vowel.o group.o vplot.o color.o svg.o ps.o
+OBJS	= vowel.o group.o vplot.o color.o stats.o svg.o ps.o
 TEST	= male-back.txt female-front.txt diphthongs.txt
 
 PREFIX	= ${HOME}

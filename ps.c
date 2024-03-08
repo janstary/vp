@@ -43,7 +43,7 @@ psgroup(struct group* g, FILE* f)
 	for (v = g->head; v; v = v->next)
 		psvow(v, f);
 	if (g->gx && g->gy) {
-		fprintf(f, "%% center\n");
+		fprintf(f, "%% center of gravity\n");
 		fprintf(f, "() %u %u 10 dot\n", g->gx, g->gy);
 	}
 	if (g->e) {

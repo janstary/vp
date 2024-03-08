@@ -92,8 +92,13 @@ main(int argc, char** argv)
 
 	while ((g = getgroup(ifp))) {
 		g->color = p->size;
-		if (gflag) gravity(g);
-		if (eflag) ellipse(g);
+		if (eflag) {
+			gravity(g);
+			ellipse(g);
+		}
+		if (gflag && !eflag) {
+			gravity(g);
+		}
 		addgroup(g, p);
 	}
 
