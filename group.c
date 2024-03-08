@@ -75,14 +75,11 @@ gravity(struct group* g)
 void
 ellipse(struct group* g)
 {
-	/*
 	if (g == NULL)
 		return;
 	if (g->size == 0)
 		return;
-	if ((g->e = calloc(1, sizeof(struct ellipse))) == NULL)
-		err(1, NULL);
-	*/
+	matrix(g);
 }
 
 static int

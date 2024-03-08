@@ -3,4 +3,6 @@
 
 #include "group.h"
 
+void matrix(struct group*);
+
 #endif
