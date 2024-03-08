@@ -95,8 +95,7 @@ main(int argc, char** argv)
 		if (eflag) {
 			gravity(g);
 			ellipse(g);
-		}
-		if (gflag && !eflag) {
+		} else if (gflag) {
 			gravity(g);
 		}
 		addgroup(g, p);
