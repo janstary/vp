@@ -1,6 +1,7 @@
 #ifndef _GROUP_H_
 #define _GROUP_H_
 
+#include <stdint.h>
 #include "vowel.h"
 
 struct ellipse {
@@ -17,7 +18,7 @@ struct group {
 	unsigned F1max;
 	unsigned F2min;
 	unsigned F2max;
-	unsigned gx,gy;
+	int32_t gx, gy;
 	struct ellipse* e;
 	struct vowel* head;
 	struct vowel* tail;
