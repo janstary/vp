@@ -26,8 +26,8 @@ ps.o: ps.c ps.h
 	$(CC) $(CFLAGS) -c $<
 
 test: ${BINS} ${TEST}
-	for i in ${TEST} ; do ./vp -g $$i ; done
-	for i in ${TEST} ; do ./vp -g $$i $${i%.txt}.svg; done
+	for i in ${TEST} ; do ./vp -ge $$i ; done
+	for i in ${TEST} ; do ./vp -ge $$i $${i%.txt}.svg; done
 
 lint: ${MANS}
 	mandoc -Tlint -Wstyle ${MANS}

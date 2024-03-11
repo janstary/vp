@@ -5,9 +5,8 @@
 #include "vowel.h"
 
 struct cloud {
-	struct point c;
-	float min, maj;
-	float slope;
+	struct point* a;
+	struct point* b;
 };
 
 struct group {
@@ -24,7 +23,5 @@ struct group {
 };
 
 struct group* getgroup(FILE*);
-void gravity(struct group*);
-void ellipse(struct group*);
 
 #endif

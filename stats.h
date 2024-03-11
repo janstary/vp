@@ -3,6 +3,13 @@
 
 #include "group.h"
 
-void matrix(struct group*);
+struct matrix {
+	float M[2][2];
+	float e[2][2];
+	float l[2];
+};
+
+void gravity(struct group*);
+void ellipse(struct group*);
 
 #endif

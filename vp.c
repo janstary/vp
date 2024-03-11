@@ -8,6 +8,7 @@
 
 #include "vowel.h"
 #include "group.h"
+#include "stats.h"
 #include "vplot.h"
 #include "svg.h"
 #include "ps.h"
