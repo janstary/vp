@@ -88,25 +88,29 @@ svgwrite(struct vplot* p, FILE* f)
 	fprintf(f, "<!DOCTYPE svg PUBLIC\n");
 	fprintf(f, "\t'" SVGVER "'\n");
 	fprintf(f, "\t'" SVGURI "'>\n");
-	fprintf(f, "<svg width='%u' height='%u'",
-		p->max->F1 - p->min->F1, p->max->F2 - p->min->F2);
-	fprintf(f, " viewBox='%u %u %u %u'\n",
-		p->min->F1, p->min->F2, p->max->F1, p->max->F2);
+	/* The SVG axes start in the UL corner, going right and down.
+	 * Rotate 180 clockwise (which is +90 in SVG), shift back by
+	 * the width and height (in the rotated coordinates),
+	 * and switch WxH in the <svg> element. */
+	fprintf(f, "<svg height='%u' width='%u'",
+		p->max->F1 - p->min->F1,
+		p->max->F2 - p->min->F2);
 	fprintf(f, "\txmlns='" SVGXML "'>\n");
 	fprintf(f, "\n");
 
 	/* a font that has the glyphs */
 
-	/* axes and ticks  */
+	/* The SVG <g>roup that holds everything */
+	fprintf(f, "<g transform='rotate(90) translate(-%u -%u)'>\n",
+		p->min->F1, p->max->F2);
 
+	/* FIXME: axes and ticks, in HZ and Bark */
 	fprintf(f,
 		"<rect x='%u' y='%u' width='%u' height='%u'\n"
 		"\tfill='white' stroke-width='2' stroke='black'/>\n\n",
 		p->min->F1, p->min->F2,
 		p->max->F1 - p->min->F1,
 		p->max->F2 - p->min->F2);
-
-	/* FIXME ticks, in HZ and Bark */
 
 	/* Draw the actual vowels */
 	for (g = p->head; g; g = g->next) {
@@ -116,6 +120,6 @@ svgwrite(struct vplot* p, FILE* f)
 
 	/* Display the group labels */
 
-	fprintf(f, "</svg>\n");
+	fprintf(f, "</g>\n\n</svg>\n");
 	return 0;
 }
