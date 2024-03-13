@@ -182,9 +182,11 @@ pswrite(struct vplot* p, FILE* f)
 	fprintf(f, "F1min 50 add Hz1 F2max 100 sub Hz2 translate\n");
 	fprintf(f, "/Charis-SIL findfont 15 scalefont setfont\n");
 	for (g = p->head; g; g = g->next) {
-		psrgb(f, g->color);
-		fprintf(f, "0 20 neg translate 0 0 moveto\n");
-		fprintf(f, "(%s) show\n", g->label);
+		if (g->label) {
+			psrgb(f, g->color);
+			fprintf(f, "0 20 neg translate 0 0 moveto\n");
+			fprintf(f, "(%s) show\n", g->label);
+		}
 	}
 	fprintf(f, "\n");
 
