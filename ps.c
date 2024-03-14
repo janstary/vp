@@ -63,28 +63,32 @@ pswrite(struct vplot* p, FILE* f)
 	if (p == NULL || f == NULL)
 		return -1;
 
-	fprintf(f, "%%!PS-Adobe-3.0\n");
-	fprintf(f, "%%%%Orientation: Portrait\n");
-	fprintf(f, "%%%%DocumentMedia: A4 595 841 0 () ()\n");
-	fprintf(f, "%%%%DocumentNeededResources: font Times-Roman\n");
-	fprintf(f, "%%%%DocumentSuppliedResources: procset vowels\n");
-	fprintf(f, "%%%%EndComments\n");
-	fprintf(f, "%%%%BeginProlog\n");
-	fprintf(f, "%%%%BeginResource: procset vowels 10170 10170\n");
-	fprintf(f, "/f0 { /Times-Roman fs selectfont } def\n");
-	fprintf(f, "/f1 { /Times-Bold fs selectfont } def\n");
-	fprintf(f, "%%%%EndResource\n");
-	fprintf(f, "%%%%EndProlog\n");
-	fprintf(f, "%%%%BeginSetup\n");
-	fprintf(f, "%%%%BeginFeature: *PageSize Letter\n");
-	fprintf(f, "<</PageSize [612 790]>>setpagedevice\n");
-	fprintf(f, "%%%%EndFeature\n");
-	fprintf(f, "%%%%EndSetup\n");
-	fprintf(f, "%%%%Page: 1 1\n");
-	fprintf(f, "\n");
+	fprintf(f,
+		"%%!PS-Adobe-3.0\n"
+		/* FIXME
+		"%%%%Orientation: Portrait\n"
+		"%%%%DocumentMedia: A4 595 842 0 () ()\n"
+		"%%%%DocumentNeededResources: font Times-Roman\n"
+		"%%%%DocumentSuppliedResources: procset vowels\n"
+		"%%%%EndComments\n"
+		"%%%%BeginProlog\n"
+		"%%%%BeginResource: procset vowels 10170 10170\n"
+		"/f0 { /Times-Roman fs selectfont } def\n"
+		"/f1 { /Times-Bold fs selectfont } def\n"
+		"%%%%EndResource\n"
+		"%%%%EndProlog\n"
+		 */
+		"%%%%BeginSetup\n"
+		/*"%%%%BeginFeature: *PageSize A4\n"*/
+		"%%%%BeginFeature: *PageSize VP\n"
+		"<</PageSize [%d %d]>>setpagedevice\n"
+		"%%%%EndFeature\n"
+		"%%%%EndSetup\n"
+		"%%%%Page: 1 1\n\n",
+		p->max->F1 - p->min->F1,
+		p->max->F2 - p->min->F2);
 
-	/* PS itself will do the scaling, given the limits.
-	 * Also, we can simply translate back down to F1 neg F2 neg
+	/* We can translate back down to F1 neg F2 neg
 	 * and have the dots be placed inside the actual range. */
 
 	fprintf(f, "/F1min { %4u } def\n", p->min->F1);
@@ -93,13 +97,8 @@ pswrite(struct vplot* p, FILE* f)
 	fprintf(f, "/F2max { %4u } def\n", p->max->F2);
 	fprintf(f, "\n");
 
-	/* Compute the ratio of Hz to paper/bbox size
-	 * so that we can use the Hz coordinates. */
-
-	fprintf(f, "/Hz1 { 595 F1max F1min sub div mul } def\n");
-	fprintf(f, "/Hz2 { 841 F2max F2min sub div mul } def\n");
-	fprintf(f, "/hzw { F1max F1min sub Hz1 } def\n");
-	fprintf(f, "/hzh { F2max F2min sub Hz2 } def\n");
+	fprintf(f, "/hzw { F1max F1min sub } def\n");
+	fprintf(f, "/hzh { F2max F2min sub } def\n");
 	fprintf(f, "\n");
 
 	/* the plotting routines */
@@ -109,8 +108,8 @@ pswrite(struct vplot* p, FILE* f)
 
 	fprintf(f, "/dot {\n"
 		"\t/r exch def\n"
-		"\tHz2 round /y exch def\n"
-		"\tHz1 round /x exch def\n"
+		"\tround /y exch def\n"
+		"\tround /x exch def\n"
 		"\tnewpath x y r 0 360 arc closepath fill\n"
 		"\tx y moveto r 1 add r 1 add neg rmoveto\n"
 		"\tshow\n} def\n\n");
@@ -122,10 +121,10 @@ pswrite(struct vplot* p, FILE* f)
 		"\t/heady exch def /headx exch def\n"
 		"\t/taily exch def /tailx exch def\n"
 		"\ttailx taily ds dot\n"
-		"\t/tailx tailx Hz1 round def\n"
-		"\t/taily taily Hz2 round def\n"
-		"\t/headx headx Hz1 round def\n"
-		"\t/heady heady Hz2 round def\n"
+		"\t/tailx tailx round def\n"
+		"\t/taily taily round def\n"
+		"\t/headx headx round def\n"
+		"\t/heady heady round def\n"
 		"\t/dx headx tailx sub def\n"
 		"\t/dy heady taily sub def\n"
 		"\t/len dx dy norm def\n"
@@ -145,16 +144,16 @@ pswrite(struct vplot* p, FILE* f)
 		"\t/min exch def /maj exch def /ang exch def\n"
 		"\t/cy exch def /cx exch def\n"
 		"\tgsave\n"
-		"\tcx Hz1 cy Hz2 translate\n"
+		"\tcx cy translate\n"
 		"\tang rotate maj min scale\n"
-		"\t1 25 Hz1 div setlinewidth\n"
+		"\t1 25 div setlinewidth\n"
 		"\tnewpath 0 0 1 0 360 arc stroke\n"
 		"\tgrestore\n"
 		"\t} def\n\n");
 
 	/* a font that has the glyphs */
 
-	fprintf(f, "/Charis-SIL findfont 20 Hz2 scalefont setfont\n");
+	fprintf(f, "/Charis-SIL findfont 20 scalefont setfont\n");
 	fprintf(f, "\n");
 
 	/* axes and ticks  */
@@ -170,19 +169,20 @@ pswrite(struct vplot* p, FILE* f)
 	fprintf(f, "/tick 4 string def\n\n");
 
 	fprintf(f, "F1min 100 add 100 F1max 100 sub {\n");
-	fprintf(f, "\tdup F1min sub Hz1\n");
+	fprintf(f, "\tdup F1min sub \n");
 	fprintf(f, "\tnewpath 5 moveto 0 5 rlineto 2 3 rmoveto\n");
 	fprintf(f, "\tgsave 90 rotate tick cvs show grestore stroke\n");
 	fprintf(f, "} for\n");
 
 	fprintf(f, "F2min 100 add 100 F2max 100 sub {\n");
-	fprintf(f, "\tdup F2min sub Hz2\n");
+	fprintf(f, "\tdup F2min sub \n");
 	fprintf(f, "\tnewpath 5 exch moveto 5 0 rlineto 2 -2 rmoveto\n");
 	fprintf(f, "\ttick cvs show stroke\n");
-	fprintf(f, "} for\n");
+	fprintf(f, "} for\n\n");
 
-	/* Shift the origin to the minimal point */
-	fprintf(f, "\nF1min Hz1 neg F2min Hz2 neg translate\n");
+	/* Shift the origin to the minimal point
+	 * and scale to fit if needed FIXME*/
+	fprintf(f, "F1min neg F2min neg translate 1.0 dup scale\n");
 
 	/* Draw the actual vowel groups */
 	for (g = p->head; g; g = g->next)
@@ -190,7 +190,7 @@ pswrite(struct vplot* p, FILE* f)
 	fprintf(f, "\n");
 
 	/* Display the group labels */
-	fprintf(f, "F1min 50 add Hz1 F2max 100 sub Hz2 translate\n");
+	fprintf(f, "F1min 50 add F2max 100 sub translate\n");
 	fprintf(f, "/Charis-SIL findfont 15 scalefont setfont\n");
 	for (g = p->head; g; g = g->next) {
 		if (g->label) {
