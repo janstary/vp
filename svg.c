@@ -1,5 +1,7 @@
+#include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "vowel.h"
 #include "group.h"
@@ -22,7 +24,7 @@ svgpoint(FILE* f, struct point* p, int size, uint32_t color)
 }
 
 static void
-svgline(FILE* f, struct point* p1, struct point* p2, int s, uint32_t c)
+svgarrow(FILE* f, struct point* p1, struct point* p2, int s, uint32_t c)
 {
 	if (f == NULL
 	|| p1 == NULL
@@ -32,6 +34,17 @@ svgline(FILE* f, struct point* p1, struct point* p2, int s, uint32_t c)
 		"<line x1='%u' y1='%u' x2='%u' y2='%u'\n"
 		"\tstroke='#%06x' stroke-width='%u'/>\n",
 		p1->F1, p1->F2, p2->F1, p2->F2, c, s);
+}
+
+static void
+svgcloud(FILE* f, struct point* G, struct cloud* E, uint32_t c)
+{
+	fprintf(f,
+		"<ellipse cx='%u' cy='%u' rx='%f' ry='%f'\n"
+		"\ttransform='rotate(%f %u %u)'\n"
+		"\tstroke='#%06x' fill='none'/>\n",
+		G->F1, G->F2, E->major, E->minor,
+		E->angle, G->F1, G->F2, c);
 }
 
 static void
@@ -47,7 +60,7 @@ svgvow(struct vowel* v, FILE* f)
 		svgpoint(f, v->V[0], 5, v->color);
 	if (v->V[1]) {
 		svgpoint(f, v->V[1], 5, v->color);
-		svgline(f, v->V[0], v->V[1], 4, v->color);
+		svgarrow(f, v->V[0], v->V[1], 4, v->color);
 	}
 	fprintf(f, "</g>\n");
 }
@@ -55,6 +68,7 @@ svgvow(struct vowel* v, FILE* f)
 static void
 svggroup(struct group* g, FILE* f)
 {
+	int i;
 	struct vowel* v;
 	if (g == NULL)
 		return;
@@ -66,10 +80,12 @@ svggroup(struct group* g, FILE* f)
 		v->color = g->color;
 		svgvow(v, f);
 	}
-	if (g->G[0])
-		svgpoint(f, g->G[0], 10, g->color);
-	if (g->G[1])
-		svgpoint(f, g->G[1], 10, g->color);
+	for (i = 0; i < 2; i++) {
+		if (g->G[i])
+			svgpoint(f, g->G[i], 10, g->color);
+		if (g->E[i])
+			svgcloud(f, g->G[i], g->E[i], g->color);
+	}
 	fprintf(f, "</g>");
 	if (g->label)
 		fprintf(f, "<!-- %s -->", g->label);

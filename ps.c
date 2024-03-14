@@ -32,6 +32,7 @@ psrgb(FILE *f, uint32_t rgb) {
 static void
 psgroup(struct group* g, FILE* f)
 {
+	int i;
 	struct vowel* v;
 	if (g == NULL)
 		return;
@@ -42,13 +43,16 @@ psgroup(struct group* g, FILE* f)
 	psrgb(f, g->color);
 	for (v = g->head; v; v = v->next)
 		psvow(v, f);
-	if (g->G[0]) {
-		fprintf(f, "%% center of gravity\n");
-		fprintf(f, "() %u %u 10 dot\n", g->G[0]->F1, g->G[0]->F2);
-	}
-	if (g->G[1]) {
-		fprintf(f, "%% the other center of gravity\n");
-		fprintf(f, "() %u %u 10 dot\n", g->G[1]->F1, g->G[1]->F2);
+	for (i = 0; i < 2; i++) {
+		if (g->G[i]) {
+			fprintf(f, "() %u %u 10 dot\n",
+				g->G[i]->F1, g->G[i]->F2);
+		}
+		if (g->E[i]) {
+			fprintf(f, "%d %d %f %f %f ellipse\n",
+			g->G[i]->F1, g->G[i]->F2, g->E[i]->angle,
+			g->E[i]->major, g->E[i]->minor);
+		}
 	}
 }
 
@@ -100,46 +104,53 @@ pswrite(struct vplot* p, FILE* f)
 
 	/* the plotting routines */
 
-	fprintf(f, "/dist { dup mul exch dup mul add sqrt } def\n");
-	fprintf(f, "\n");
+	fprintf(f, "/norm "
+		"{ dup mul exch dup mul add sqrt } def\n\n");
 
-	fprintf(f, "/dot {\n");
-	fprintf(f, "\t/r exch def\n");
-	fprintf(f, "\tHz2 round /y exch def\n");
-	fprintf(f, "\tHz1 round /x exch def\n");
-	fprintf(f, "\tnewpath x y r 0 360 arc closepath fill\n");
-	fprintf(f, "\tx y moveto r 1 add r 1 add neg rmoveto\n");
-	fprintf(f, "\tshow\n} def\n");
-	fprintf(f, "\n");
+	fprintf(f, "/dot {\n"
+		"\t/r exch def\n"
+		"\tHz2 round /y exch def\n"
+		"\tHz1 round /x exch def\n"
+		"\tnewpath x y r 0 360 arc closepath fill\n"
+		"\tx y moveto r 1 add r 1 add neg rmoveto\n"
+		"\tshow\n} def\n\n");
 
-	fprintf(f, "/adict 20 dict def\n");
-	fprintf(f, "adict begin /mtrx matrix def end\n");
-	fprintf(f, "/arrow {\n\tadict begin\n");
-	fprintf(f, "\t/ds exch def\n");
-	fprintf(f, "\t/heady exch def /headx exch def\n");
-	fprintf(f, "\t/taily exch def /tailx exch def\n");
-	fprintf(f, "\ttailx taily ds dot\n");
+	fprintf(f, "/adict 20 dict def\n"
+		"adict begin /mtrx matrix def end\n"
+		"/arrow {\n\tadict begin\n"
+		"\t/ds exch def\n"
+		"\t/heady exch def /headx exch def\n"
+		"\t/taily exch def /tailx exch def\n"
+		"\ttailx taily ds dot\n"
+		"\t/tailx tailx Hz1 round def\n"
+		"\t/taily taily Hz2 round def\n"
+		"\t/headx headx Hz1 round def\n"
+		"\t/heady heady Hz2 round def\n"
+		"\t/dx headx tailx sub def\n"
+		"\t/dy heady taily sub def\n"
+		"\t/len dx dy norm def\n"
+		"\t/ang dy dx atan def\n"
+		"\t/hb len 20 sub def\n"
+		"\t/th 1 def\n"
+		"\t/ht 3 def\n"
+		"\t/smtx mtrx currentmatrix def\n"
+		"\tnewpath tailx taily translate ang rotate\n"
+		"\t0 th moveto hb th lineto hb ht lineto len 0 lineto\n"
+		"\thb ht neg lineto hb th neg lineto 0 th neg lineto\n"
+		"\tclosepath fill\n"
+		"\tsmtx setmatrix\n"
+		"\tend\n} def\n\n");
 
-	fprintf(f, "\t/tailx tailx Hz1 round def\n");
-	fprintf(f, "\t/taily taily Hz2 round def\n");
-	fprintf(f, "\t/headx headx Hz1 round def\n");
-	fprintf(f, "\t/heady heady Hz2 round def\n");
-	fprintf(f, "\t/dx headx tailx sub def\n");
-	fprintf(f, "\t/dy heady taily sub def\n");
-	fprintf(f, "\t/len dx dy dist def\n");
-	fprintf(f, "\t/ang dy dx atan def\n");
-	fprintf(f, "\t/hb len 20 sub def\n");
-	fprintf(f, "\t/th 1 def\n");
-	fprintf(f, "\t/ht 3 def\n");
-
-	fprintf(f, "\t/smtx mtrx currentmatrix def\n");
-	fprintf(f, "\tnewpath tailx taily translate ang rotate\n");
-	fprintf(f, "\t0 th moveto hb th lineto hb ht lineto len 0 lineto\n");
-	fprintf(f, "\thb ht neg lineto hb th neg lineto 0 th neg lineto\n");
-	fprintf(f, "\tclosepath fill\n");
-	fprintf(f, "\tsmtx setmatrix\n");
-	fprintf(f, "\tend\n} def\n");
-	fprintf(f, "\n");
+	fprintf(f, "/ellipse {\n"
+		"\t/min exch def /maj exch def /ang exch def\n"
+		"\t/cy exch def /cx exch def\n"
+		"\tgsave\n"
+		"\tcx Hz1 cy Hz2 translate\n"
+		"\tang rotate maj min scale\n"
+		"\t1 25 Hz1 div setlinewidth\n"
+		"\tnewpath 0 0 1 0 360 arc stroke\n"
+		"\tgrestore\n"
+		"\t} def\n\n");
 
 	/* a font that has the glyphs */
 
@@ -173,7 +184,7 @@ pswrite(struct vplot* p, FILE* f)
 	/* Shift the origin to the minimal point */
 	fprintf(f, "\nF1min Hz1 neg F2min Hz2 neg translate\n");
 
-	/* Draw the actual vowels */
+	/* Draw the actual vowel groups */
 	for (g = p->head; g; g = g->next)
 		psgroup(g, f);
 	fprintf(f, "\n");

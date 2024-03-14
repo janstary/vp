@@ -5,8 +5,9 @@
 #include "vowel.h"
 
 struct cloud {
-	struct point* a;
-	struct point* b;
+	float major;
+	float minor;
+	float angle;
 };
 
 struct group {
@@ -15,8 +16,8 @@ struct group {
 	uint32_t color;
 	struct point* min;
 	struct point* max;
-	struct point* G[2];
-	struct cloud* E[2];
+	struct point* G[2];	/* center(s) of gravity */
+	struct cloud* E[2];	/* ellipse(s) around Vs */
 	struct vowel* head;
 	struct vowel* tail;
 	struct group* next;
