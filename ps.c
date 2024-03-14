@@ -49,9 +49,9 @@ psgroup(struct group* g, FILE* f)
 				g->G[i]->F1, g->G[i]->F2);
 		}
 		if (g->E[i]) {
-			fprintf(f, "%d %d %f %f %f ellipse\n",
-			g->G[i]->F1, g->G[i]->F2, g->E[i]->angle,
-			g->E[i]->major, g->E[i]->minor);
+			fprintf(f, "%f %f %f %d %d ellipse\n",
+			g->E[i]->major, g->E[i]->minor, g->E[i]->angle,
+			g->G[i]->F1, g->G[i]->F2);
 		}
 	}
 }
@@ -149,12 +149,11 @@ pswrite(struct vplot* p, FILE* f)
 		"\tend\n} def\n\n");
 
 	fprintf(f, "/ellipse {\n"
-		"\t/min exch def /maj exch def /ang exch def\n"
-		"\t/cy exch def /cx exch def\n"
 		"\tgsave\n"
-		"\tcx cy translate\n"
-		"\tang rotate maj min scale\n"
+		"\ttranslate rotate scale\n"
 		"\t1 50 div setlinewidth\n"
+		/* FIXME line width should be constant;
+		 * we know the ratio: scale back to 1 */
 		"\tnewpath 0 0 1 0 360 arc stroke\n"
 		"\tgrestore\n"
 		"\t} def\n\n");
