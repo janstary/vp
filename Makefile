@@ -11,7 +11,7 @@ CFLAGS	= -Wall -pedantic
 all: ${BINS}
 
 vp: ${OBJS} vp.c
-	${CC} ${CFLAGS} -o vp ${OBJS} vp.c
+	${CC} ${CFLAGS} -o vp ${OBJS} vp.c -lm
 
 vowel.o: vowel.c vowel.h
 group.o: group.c group.h
