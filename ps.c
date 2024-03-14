@@ -70,25 +70,9 @@ pswrite(struct vplot* p, FILE* f)
 
 	fprintf(f,
 		"%%!PS-Adobe-3.0\n"
-		/*
-		"%%%%Orientation: Portrait\n"
-		*/
 		"%%%%DocumentMedia: VP %d %d 0 () ()\n"
-		/*
-		"%%%%DocumentNeededResources: font Times-Roman\n"
-		"%%%%DocumentSuppliedResources: procset vowels\n"
-		*/
 		"%%%%EndComments\n"
-		/*
-		"%%%%BeginProlog\n"
-		"%%%%BeginResource: procset vowels 10170 10170\n"
-		"/f0 { /Times-Roman fs selectfont } def\n"
-		"/f1 { /Times-Bold fs selectfont } def\n"
-		"%%%%EndResource\n"
-		"%%%%EndProlog\n"
-		 */
 		"%%%%BeginSetup\n"
-		/*"%%%%BeginFeature: *PageSize A4\n"*/
 		"%%%%BeginFeature: *PageSize VP\n"
 		"<</PageSize [%d %d]>>setpagedevice\n"
 		"%%%%EndFeature\n"
