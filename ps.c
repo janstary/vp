@@ -59,18 +59,27 @@ psgroup(struct group* g, FILE* f)
 int
 pswrite(struct vplot* p, FILE* f)
 {
+	int hzw, hzh;
 	struct group* g = NULL;
+
 	if (p == NULL || f == NULL)
 		return -1;
 
+	hzw = p->max->F1 - p->min->F1;
+	hzh = p->max->F2 - p->min->F2;
+
 	fprintf(f,
 		"%%!PS-Adobe-3.0\n"
-		/* FIXME
+		/*
 		"%%%%Orientation: Portrait\n"
-		"%%%%DocumentMedia: A4 595 842 0 () ()\n"
+		*/
+		"%%%%DocumentMedia: VP %d %d 0 () ()\n"
+		/*
 		"%%%%DocumentNeededResources: font Times-Roman\n"
 		"%%%%DocumentSuppliedResources: procset vowels\n"
+		*/
 		"%%%%EndComments\n"
+		/*
 		"%%%%BeginProlog\n"
 		"%%%%BeginResource: procset vowels 10170 10170\n"
 		"/f0 { /Times-Roman fs selectfont } def\n"
@@ -85,8 +94,7 @@ pswrite(struct vplot* p, FILE* f)
 		"%%%%EndFeature\n"
 		"%%%%EndSetup\n"
 		"%%%%Page: 1 1\n\n",
-		p->max->F1 - p->min->F1,
-		p->max->F2 - p->min->F2);
+		hzw, hzh, hzw, hzh);
 
 	/* We can translate back down to F1 neg F2 neg
 	 * and have the dots be placed inside the actual range. */
@@ -97,8 +105,8 @@ pswrite(struct vplot* p, FILE* f)
 	fprintf(f, "/F2max { %4u } def\n", p->max->F2);
 	fprintf(f, "\n");
 
-	fprintf(f, "/hzw { F1max F1min sub } def\n");
-	fprintf(f, "/hzh { F2max F2min sub } def\n");
+	fprintf(f, "/hzw { %d } def\n", hzw);
+	fprintf(f, "/hzh { %d } def\n", hzh);
 	fprintf(f, "\n");
 
 	/* the plotting routines */
@@ -146,7 +154,7 @@ pswrite(struct vplot* p, FILE* f)
 		"\tgsave\n"
 		"\tcx cy translate\n"
 		"\tang rotate maj min scale\n"
-		"\t1 25 div setlinewidth\n"
+		"\t1 50 div setlinewidth\n"
 		"\tnewpath 0 0 1 0 360 arc stroke\n"
 		"\tgrestore\n"
 		"\t} def\n\n");
